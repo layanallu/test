@@ -25,7 +25,7 @@ df = pd.read_csv("space_missions_dataset.csv")
 
 def fancy_card(title: str, value: str, color: str = "#f9f9f9"):
     st.markdown(f"""
-        <div style="background-color: {color}; padding: 20px; border-radius: 16px; 
+        <div style="background-color: {color}; padding: 10px; border-radius: 16px; 
                     text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 10px;">
             <h3 style="margin: 0; color: #111;">{title}</h3>
             <h5 style="margin: 0; color: #444;">{value}</h5>
