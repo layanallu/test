@@ -22,44 +22,39 @@ df = pd.read_csv("space_missions_dataset.csv")
 # tabs/mission_summary.py
 
 
-def render(df):
-    st.header("🚀 Mission Summary Overview")
 
-    # ----------- Card Section: Launch Vehicle -----------
-    st.subheader("🧩 Launch Vehicles")
-    vehicle_counts = df["Launch Vehicle"].value_counts().reset_index()
-    vehicle_counts.columns = ["Launch Vehicle", "Count"]
-    v_cols = st.columns(min(4, len(vehicle_counts)))
-    for idx, row in vehicle_counts.iterrows():
-        with v_cols[idx % 4]:
-            st.markdown(
-                f"""
-                <div style="background-color:#f8bc04; padding:15px; border-radius:10px; text-align:center;">
-                    <h5 style="margin:0;">{row['Launch Vehicle']}</h5>
-                    <p style="font-size:20px; font-weight:bold; color:#4a4a4a;">{row['Count']}</p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
 
-    st.markdown("---")
+    
+  def fancy_card(title: str, value: str, color: str = "#f9f9f9"):
+    st.markdown(f"""
+        <div style="background-color: {color}; padding: 20px; border-radius: 16px; 
+                    text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 10px;">
+            <h5 style="margin: 0; color: #444;">{title}</h5>
+            <h2 style="margin: 0; color: #111;">{value}</h2>
+        </div>
+    """, unsafe_allow_html=True)
 
-    # ----------- Card Section: Mission Type -----------
-    st.subheader("🎯 Mission Types")
-    type_counts = df["Mission Type"].value_counts().reset_index()
-    type_counts.columns = ["Mission Type", "Count"]
-    t_cols = st.columns(min(4, len(type_counts)))
-    for idx, row in type_counts.iterrows():
-        with t_cols[idx % 4]:
-            st.markdown(
-                f"""
-                <div style="background-color:#9ccddc; padding:15px; border-radius:10px; text-align:center;">
-                    <h5 style="margin:0;">{row['Mission Type']}</h5>
-                    <p style="font-size:20px; font-weight:bold; color:#4a4a4a;">{row['Count']}</p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+# دالة العرض
+def render(df: pd.DataFrame):
+    st.header("🛰️ Mission Summary Overview")
+
+    # الكروت الخاصة بـ Launch Vehicle
+    st.subheader("🚀 Launch Vehicles Overview")
+    launch_counts = df["Launch Vehicle"].value_counts().reset_index()
+    launch_counts.columns = ["Launch Vehicle", "Count"]
+    cols = st.columns(min(4, len(launch_counts)))
+    for idx, row in launch_counts.iterrows():
+        with cols[idx % 4]:
+            fancy_card(row["Launch Vehicle"], f"{row['Count']} Missions")
+
+    # الكروت الخاصة بـ Mission Type
+    st.subheader("🎯 Mission Types Overview")
+    mission_counts = df["Mission Type"].value_counts().reset_index()
+    mission_counts.columns = ["Mission Type", "Count"]
+    cols2 = st.columns(min(4, len(mission_counts)))
+    for idx, row in mission_counts.iterrows():
+        with cols2[idx % 4]:
+            fancy_card(row["Mission Type"], f"{row['Count']} Missions")
 
     st.markdown("---")
 
