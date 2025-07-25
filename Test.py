@@ -84,5 +84,7 @@ def clean_summary_render(df: pd.DataFrame):
 
 # Function ready to use in Streamlit app
 clean_summary_render_code = clean_summary_render.__code__.co_code  # placeholder for deployment note
+render(df)
+
 
 
