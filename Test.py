@@ -1,4 +1,14 @@
+import pandas as pd
 
+import matplotlib.pyplot as plt
+
+import plotly.express as px
+import streamlit as st
+
+
+
+# Load Data
+df = pd.read_csv("space_missions_dataset.csv")
 # Format large numbers clearly
 def format_number(x):
     if x >= 1e9:
