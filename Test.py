@@ -83,3 +83,7 @@ def render(df):
         st.plotly_chart(failure_fig, use_container_width=True)
     with col3:
         st.metric(label="💰 Total Mission Cost", value=formatted_cost)
+
+
+render(df)
+
