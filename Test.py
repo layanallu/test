@@ -34,7 +34,7 @@ def render(df):
         with v_cols[idx % 4]:
             st.markdown(
                 f"""
-                <div style="background-color:#f0f2f6; padding:15px; border-radius:10px; text-align:center;">
+                <div style="background-color:#f8bc04; padding:15px; border-radius:10px; text-align:center;">
                     <h5 style="margin:0;">{row['Launch Vehicle']}</h5>
                     <p style="font-size:20px; font-weight:bold; color:#4a4a4a;">{row['Count']}</p>
                 </div>
@@ -53,7 +53,7 @@ def render(df):
         with t_cols[idx % 4]:
             st.markdown(
                 f"""
-                <div style="background-color:#f0f2f6; padding:15px; border-radius:10px; text-align:center;">
+                <div style="background-color:#9ccddc; padding:15px; border-radius:10px; text-align:center;">
                     <h5 style="margin:0;">{row['Mission Type']}</h5>
                     <p style="font-size:20px; font-weight:bold; color:#4a4a4a;">{row['Count']}</p>
                 </div>
