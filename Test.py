@@ -79,7 +79,7 @@ def render(df):
             textinfo="none"
         ))
         failure_fig.update_layout(
-            height=450, width=450,
+            height=350, width=350,
             annotations=[dict(
                 text=f"{failure_rate:.1f}%", x=0.5, y=0.5, font_size=24, showarrow=False
             )],
