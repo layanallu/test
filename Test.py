@@ -60,7 +60,7 @@ def render(df):
             textinfo="none"
         ))
         success_fig.update_layout(
-            height=250, width=250,
+            height=650, width=650,
             annotations=[dict(
                 text=f"{success_rate:.1f}%", x=0.5, y=0.5, font_size=24, showarrow=False
             )],
@@ -78,7 +78,7 @@ def render(df):
             textinfo="none"
         ))
         failure_fig.update_layout(
-            height=250, width=250,
+            height=450, width=450,
             annotations=[dict(
                 text=f"{failure_rate:.1f}%", x=0.5, y=0.5, font_size=24, showarrow=False
             )],
