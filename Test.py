@@ -113,7 +113,7 @@ def render(df):
     with col3:
         st.markdown(
             f"""
-            <div style="background-color:#f9f9f9; padding:25px; border-radius:10px; text-align:center;">
+            <div style="background-color:#cbe58e; padding:25px; border-radius:10px; text-align:center;">
                 <h5 style="margin-bottom:10px;">💰 Total Mission Cost</h5>
                 <p style="font-size:24px; font-weight:bold; color:#333;">{formatted_cost}</p>
             </div>
