@@ -8,6 +8,7 @@ import seaborn as sns
 import plotly.express as px
 import streamlit as st
 import plotly.graph_objects as go
+from babel.numbers import format_decimal
 
 
 
@@ -18,71 +19,107 @@ df = pd.read_csv("space_missions_dataset.csv")
 
 
 
+# tabs/mission_summary.py
+
 
 def render(df):
-    st.header("🛰️ Mission Summary Overview")
+    st.header("🚀 Mission Summary Overview")
 
-    # Create mission label: "Mission Type + Launch Vehicle"
-    df["MissionLabel"] = df["Mission Type"] + " + " + df["Launch Vehicle"]
-    label_counts = df["MissionLabel"].value_counts().reset_index()
-    label_counts.columns = ["MissionLabel", "Count"]
-
-    # Show mission label cards
-    st.subheader("📌 Mission Types with Launch Vehicles")
-    cols = st.columns(min(4, len(label_counts)))  # 4 per row
-    for idx, row in label_counts.iterrows():
-        cols[idx % 4].metric(label=row["MissionLabel"], value=f"{row['Count']} Missions")
+    # ----------- Card Section: Launch Vehicle -----------
+    st.subheader("🧩 Launch Vehicles")
+    vehicle_counts = df["Launch Vehicle"].value_counts().reset_index()
+    vehicle_counts.columns = ["Launch Vehicle", "Count"]
+    v_cols = st.columns(min(4, len(vehicle_counts)))
+    for idx, row in vehicle_counts.iterrows():
+        with v_cols[idx % 4]:
+            st.markdown(
+                f"""
+                <div style="background-color:#f0f2f6; padding:15px; border-radius:10px; text-align:center;">
+                    <h5 style="margin:0;">{row['Launch Vehicle']}</h5>
+                    <p style="font-size:20px; font-weight:bold; color:#4a4a4a;">{row['Count']}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     st.markdown("---")
 
-    # Calculate success/failure rates
+    # ----------- Card Section: Mission Type -----------
+    st.subheader("🎯 Mission Types")
+    type_counts = df["Mission Type"].value_counts().reset_index()
+    type_counts.columns = ["Mission Type", "Count"]
+    t_cols = st.columns(min(4, len(type_counts)))
+    for idx, row in type_counts.iterrows():
+        with t_cols[idx % 4]:
+            st.markdown(
+                f"""
+                <div style="background-color:#f0f2f6; padding:15px; border-radius:10px; text-align:center;">
+                    <h5 style="margin:0;">{row['Mission Type']}</h5>
+                    <p style="font-size:20px; font-weight:bold; color:#4a4a4a;">{row['Count']}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.markdown("---")
+
+    # ----------- Donut Charts -----------
+    st.subheader("📊 Mission Success & Failure Rates")
     success_rate = df["Mission Success (%)"].mean()
     failure_rate = 100 - success_rate
 
-    # Donut Chart - Success Rate
-    success_fig = go.Figure(go.Pie(
-        labels=["Success", "Remaining"],
-        values=[success_rate, 100 - success_rate],
-        hole=0.5,
-        marker_colors=["green", "lightgray"],
-        textinfo='label+percent'
-    ))
-    success_fig.update_layout(title="✅ Success Rate")
-
-    # Donut Chart - Failure Rate
-    failure_fig = go.Figure(go.Pie(
-        labels=["Failure", "Remaining"],
-        values=[failure_rate, 100 - failure_rate],
-        hole=0.5,
-        marker_colors=["red", "lightgray"],
-        textinfo='label+percent'
-    ))
-    failure_fig.update_layout(title="❌ Failure Rate")
-
-    # Total cost
-    total_cost = df["Mission Cost (billion USD)"].sum() * 1e9  # to USD
-
-    def format_number(x):
-        if x >= 1e9:
-            return f"${x/1e9:.1f}B"
-        elif x >= 1e6:
-            return f"${x/1e6:.1f}M"
-        elif x >= 1e3:
-            return f"${x/1e3:.1f}K"
-        return str(x)
-
-    formatted_cost = format_number(total_cost)
-
-    # Layout for donuts and total cost
-    st.subheader("📊 Mission Performance Summary")
     col1, col2, col3 = st.columns([1, 1, 1])
 
     with col1:
-        st.plotly_chart(success_fig, use_container_width=True)
+        fig_success = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=success_rate,
+            number={"suffix": "%", "font": {"size": 36, "color": "green"}},
+            gauge={
+                "axis": {"range": [0, 100]},
+                "bar": {"color": "green"},
+                "bgcolor": "white",
+                "borderwidth": 2,
+                "bordercolor": "gray"
+            },
+            domain={'x': [0, 1], 'y': [0, 1]},
+            title={'text': "✅ Success Rate", "font": {"size": 18}}
+        ))
+        fig_success.update_layout(height=250, margin=dict(t=30, b=0))
+        st.plotly_chart(fig_success, use_container_width=True)
+
     with col2:
-        st.plotly_chart(failure_fig, use_container_width=True)
+        fig_failure = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=failure_rate,
+            number={"suffix": "%", "font": {"size": 36, "color": "red"}},
+            gauge={
+                "axis": {"range": [0, 100]},
+                "bar": {"color": "red"},
+                "bgcolor": "white",
+                "borderwidth": 2,
+                "bordercolor": "gray"
+            },
+            domain={'x': [0, 1], 'y': [0, 1]},
+            title={'text': "❌ Failure Rate", "font": {"size": 18}}
+        ))
+        fig_failure.update_layout(height=250, margin=dict(t=30, b=0))
+        st.plotly_chart(fig_failure, use_container_width=True)
+
+    # ----------- Total Cost Card -----------
+    total_cost = df["Mission Cost (billion USD)"].sum()
+    formatted_cost = f"${format_decimal(total_cost, format='#,##0.00')} Billion"
+
     with col3:
-        st.metric(label="💰 Total Mission Cost", value=formatted_cost)
+        st.markdown(
+            f"""
+            <div style="background-color:#f9f9f9; padding:25px; border-radius:10px; text-align:center;">
+                <h5 style="margin-bottom:10px;">💰 Total Mission Cost</h5>
+                <p style="font-size:24px; font-weight:bold; color:#333;">{formatted_cost}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 
 render(df)
