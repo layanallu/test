@@ -7,20 +7,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import streamlit as st
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
+import plotly.graph_objects as go
+
 
 
 # Load Data
-df = pd.read_csv("WorldExpenditures.csv")
+df = pd.read_csv("space_missions_dataset.csv")
 
 # 1. Basic Dataset Overview
-st.title("🌍 World Government Expenditure Dashboard")
+st.title("🛰️ Mission Summary Overview")
 
-import streamlit as st
-import plotly.graph_objects as go
-import pandas as pd
+
 
 def render(df):
     st.header("🛰️ Mission Summary Overview")
