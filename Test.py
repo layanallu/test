@@ -15,50 +15,57 @@ def format_number(x):
         return f"${x / 1e3:,.1f}K"
     return str(x)
 
+# دالة عرض كروت بشكل منسق
+def display_cards(title, data, col_num=2):
+    st.subheader(title)
+    columns = st.columns(col_num)
+    for idx, row in data.iterrows():
+        col = columns[idx % col_num]
+        with col:
+            st.markdown(f"<h4 style='margin-bottom:0'>{row[0]}</h4>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color:gray'>{row[1]} Missions</p>", unsafe_allow_html=True)
+
 # دالة رئيسية
 def render(df):
     st.header("🚀 Space Mission Summary")
 
     # --- Launch Vehicle Cards ---
-    st.subheader("🛩️ Launch Vehicles")
     lv_counts = df["Launch Vehicle"].value_counts().reset_index()
     lv_counts.columns = ["Launch Vehicle", "Count"]
-    for idx, row in lv_counts.iterrows():
-        st.metric(label=row["Launch Vehicle"], value=f"{row['Count']} Missions")
+    display_cards("🛩️ Launch Vehicles", lv_counts)
 
     st.markdown("---")
 
     # --- Mission Type Cards ---
-    st.subheader("📡 Mission Types")
     mt_counts = df["Mission Type"].value_counts().reset_index()
     mt_counts.columns = ["Mission Type", "Count"]
-    for idx, row in mt_counts.iterrows():
-        st.metric(label=row["Mission Type"], value=f"{row['Count']} Missions")
+    display_cards("📡 Mission Types", mt_counts)
 
     st.markdown("---")
 
-    # --- Success Rate Donut ---
-    st.subheader("✅ Mission Success Rate")
+    # --- Success & Failure Rate Donut ---
+    st.subheader("📊 Mission Success Rate")
 
     success_rate = df["Mission Success (%)"].mean()
+    failure_rate = 100 - success_rate
 
-    success_fig = go.Figure(go.Pie(
-        labels=["Success"],
-        values=[success_rate],
+    donut_fig = go.Figure(go.Pie(
+        labels=["Success", "Failure"],
+        values=[success_rate, failure_rate],
         hole=0.6,
-        marker_colors=["green"],
-        textinfo="none"
+        marker_colors=["green", "red"],
+        textinfo="label+percent"
     ))
 
-    success_fig.update_layout(
-        showlegend=False,
+    donut_fig.update_layout(
+        showlegend=True,
         annotations=[dict(
             text=f"{success_rate:.1f}%",
             x=0.5, y=0.5, font_size=24, showarrow=False
         )]
     )
 
-    st.plotly_chart(success_fig, use_container_width=True)
+    st.plotly_chart(donut_fig, use_container_width=True)
 
     # --- Total Cost ---
     st.subheader("💰 Total Mission Cost")
